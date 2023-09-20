@@ -1,0 +1,105 @@
+Pointers in C
+-------------
+
+1) Consider the following C program.
+#include <string.h>
+int main(int argc, char *argv[])
+{
+  char *temp;
+  strcpy(temp, argv[0]);
+  return 0;
+}
+
+Why is the above code incorrect (i.e., likely to crash)?
+Uninitialized Pointer:
+The pointer char *temp is declared, but it's not initialized. When we declare a pointer without initializing it, it doesn't point to a valid memory location. 
+Buffer Overflow:
+(The strcpy function is used to copy a string from one location to another).In the code, temp doesn't point to allocated memory to hold the copied string. This will lead to a buffer overflow.
+
+2) Consider the following C program.
+#include <string.h>
+int main(int argc, char *argv[])
+{
+  char temp[9];
+  strcpy(temp, argv[0]);
+  return 0;
+}
+
+A buffer overflow occurs when the program name is 9 characters long
+(e.g., "12345.exe"). Why?
+
+A buffer overflow occurs when the program name is 9 characters long in the given C
+ program because the destination buffer temp is only allocated for 9 characters,
+ including the null terminator. This results in potential memory corruption or
+ crashes when the null terminator of the source string overflows into adjacent memory.
+
+
+3) Consider the following C program.
+#include <string.h>
+int main(int argc, char *argv[])
+{
+  char *buffer = "Hello";
+  strcpy(buffer, "World");
+  return 0;
+}
+
+Why does this program crash?
+
+This program crashes because it attempts to modify a string literal stored in read-only memory.
+ The buffer variable is a pointer to a string literal, and the strcpy function tries to change 
+its content, leading to undefined behavior and a crash.
+
+
+4) Consider the following C snippet.
+void myfunc()
+{
+  char b[100];
+  char *buffer = &b[0];
+  strcpy(buffer, "World");
+}
+
+Is this correct?  What's a simpler expression for &b[0]?
+No, the given C snippet has an issue. The strcpy function copies "World"
+into the b array, but b is not null-terminated, potentially leading to 
+unexpected behavior. A simpler expression for &b[0] is just b itself.
+ So, we can write char *buffer = b.
+
+
+5) Consider the following C program.
+#include <stdio.h>
+int main(int argc, char* argv[])
+{
+  printf("%s %s %s\n", *argv, (*(argv+1)) + 2, *(argv+2));
+  return 0;
+}
+
+If this code is executed using the following line, what will be the output?
+> ./program1 -n5 abc
+
+
+
+6) Consider the following C program.
+#include <stdio.h>
+#include <string.h>
+char *myfunc(char **argv)
+{
+  char buffer[100];
+  strcpy(buffer, "hello");
+  return buffer;
+}
+int main(int argc, char *argv[])
+{
+  char *s = myfunc(argv);
+  printf("%s\n", s);
+}
+
+What's wrong with this?
+
+The problem  is that it returns a pointer to a local variable, buffer, from the
+ myfunc function. Once myfunc exits, buffer goes out of scope, and the memory it
+ occupies becomes invalid. Attempting to use the pointer in the main function
+ leads to undefined behavior. To fix this, we should allocate memory dynamically
+ in myfunc using malloc and free it when it's no longer needed.
+
+
+

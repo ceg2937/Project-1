@@ -1,0 +1,71 @@
+Part Two: Fixing the Bugs
+-------------------------
+
+Understanding the code
+
+  1) Explain why this program uses the exclamation operator with the
+     strcmp() function.
+     the exclamation operator (!) is used with the strcmp() function to
+      negate its return value. Strcmp() returns 0 when two strings
+       are equal. By using !strcmp(...), the program checks if the strings
+        are not equal, which is often used to determine if a specific 
+        condition or match is true
+
+  2) Explain why the 'LENGTH' macro returns the length of an array.
+     Would it work with a pointer to a dynamically allocated array? (Hint:
+     understand sizeof).
+     The 'LENGTH' macro returns the length of an array by dividing the size
+      of the array (in bytes) by the size of its elements (also in bytes). 
+      It works with statically allocated arrays. However, it won't work with
+       a pointer to a dynamically allocated array because sizeof returns the
+      size of the pointer, not the size of the allocated memory block. You
+      need to keep track of the size of dynamically allocated memory 
+      separately.
+
+Bug hunting
+
+  3) Explain and fix the logical flow bug within the switch statement.
+     (What happens when the -h option is used?)
+     In the switch statement, there is a logical flow bug because there
+      is no break statement after the 'h' case. This means that when the
+      '-h' option is used, the program will execute the code for the 'h'
+      case and fall through to the default case, resulting in an error
+       message. To fix it, add a break; statement after the 'h' case.
+
+  4) Explain and fix the argument parsing error. (Why is entrycount never
+     zero?)
+   The argument parsing error occurs because the entryCount variable is never
+   zero because of the condition if (entryCount < LENGTH(entries)). This
+   condition checks if entryCount is less than the length of the entries array,
+   but it doesn't account for the case when there are no command-line arguments.
+   To fix this, you should restructure the argument parsing logic and handle 
+   the case where no words are provided separately.
+
+
+
+
+
+
+Regenerate
+
+  5) Fix print_result() to print results correctly and in the same order
+     as the words were specified on the command line.  Explain your solution.
+     
+void print_result(WordCountEntry entries[], int entry_count)
+{
+    printf("Result:\n");
+
+    for (int i = 0; i < entry_count; i++) {
+        printf("%s:%d\n", entries[i].word, entries[i].counter);
+    }
+}
+1.I replaced the while loop with a for loop that iterates through
+the entries array from index 0 to entry_count - 1. This ensures
+that the results are printed in the same order as the words
+were specified on the command line.
+
+2.Inside the loop, I use entries[i].word and entries[i].counter 
+to access and print the word and its corresponding count. This
+ way, each word is printed with its associated count in the correct order.
+
+
